@@ -41,7 +41,7 @@ public class StudentService {
         return studentItems;
     }
 
-    public StudentItem getStudent(long id) {
+    public StudentItem getStudentItem(long id) {
         Student student = studentRepository.findById(id).orElseThrow();
         StudentItem studentItem = new StudentItem();
 
@@ -50,5 +50,9 @@ public class StudentService {
         studentItem.setPhoneNumber(student.getPhoneNumber());
 
         return studentItem;
+    }
+
+    public Student getStudent(long id) {
+        return studentRepository.findById(id).orElseThrow();
     }
 }

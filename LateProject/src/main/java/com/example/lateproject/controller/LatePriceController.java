@@ -1,9 +1,6 @@
 package com.example.lateproject.controller;
 
-import com.example.lateproject.entity.Student;
-import com.example.lateproject.model.HistoryItem;
-import com.example.lateproject.model.StudentCreateRequest;
-import com.example.lateproject.model.StudentItem;
+import com.example.lateproject.model.*;
 import com.example.lateproject.serevice.LateHistoryService;
 import com.example.lateproject.serevice.StudentService;
 import lombok.RequiredArgsConstructor;
@@ -38,12 +35,12 @@ public class LatePriceController {
 
     @GetMapping("/student/{id}")
     public StudentItem getStudent(@PathVariable long id) {
-        return studentService.getStudent(id);
+        return studentService.getStudentItem(id);
     }
 
     @PostMapping("/history/{id}")
     public String setHistory(@PathVariable long id) {
-        StudentItem student = studentService.getStudent(id);
+        StudentItem student = studentService.getStudentItem(id);
         lateHistoryService.setLateHistory(student);
 
         return "Create History";
@@ -54,5 +51,17 @@ public class LatePriceController {
         return lateHistoryService.getHistories(
                 year == null ? LocalDate.now().getYear() : year,
                 month == null ? LocalDate.now().getMonthValue() : month);
+    }
+
+    @GetMapping("/detail/{id}")
+    public LateHistoryDetailResponse getHistoryDetail(@PathVariable long id) {
+        return lateHistoryService.getHistoryDetail(id);
+    }
+
+    @PatchMapping("/update")
+    public String updateStudent(@RequestBody LateStudentUpdateRequest request) {
+        lateHistoryService.putLateStudent(request.getLateHistoryId(), studentService.getStudent(request.getStudentId()));
+
+        return "Update";
     }
 }

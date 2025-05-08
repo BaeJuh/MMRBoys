@@ -1,16 +1,17 @@
 package com.example.lateproject.serevice;
 
 import com.example.lateproject.entity.LateHistory;
+import com.example.lateproject.model.LateHistoryDetailResponse;
 import com.example.lateproject.entity.Student;
 import com.example.lateproject.model.HistoryItem;
+import com.example.lateproject.model.LateStudentUpdateRequest;
 import com.example.lateproject.model.StudentItem;
 import com.example.lateproject.repository.LateHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -53,5 +54,28 @@ public class LateHistoryService {
         });
 
         return historyItems;
+    }
+
+    public LateHistoryDetailResponse getHistoryDetail(long id) {
+        LateHistory lateHistory = lateHistoryRepository.findById(id).orElseThrow();
+
+        LateHistoryDetailResponse detailResponse = new LateHistoryDetailResponse();
+
+        detailResponse.setId(lateHistory.getId());
+        detailResponse.setStudentName(lateHistory.getStudent().getName());
+        detailResponse.setPhoneNumber(lateHistory.getStudent().getPhoneNumber());
+        detailResponse.setDate(
+                lateHistory.getDate().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일"))
+        );
+
+        return detailResponse;
+    }
+
+    public void putLateStudent(long id, Student student) {
+        LateHistory lateHistory = lateHistoryRepository.findById(id).orElseThrow();
+
+        lateHistory.setStudent(student);
+
+        lateHistoryRepository.save(lateHistory);
     }
 }
