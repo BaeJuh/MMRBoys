@@ -1,12 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-
-interface Card {
-    name: string;
-    imgName: string;
-    means: string[];
-    selected?: boolean;
-}
+import type { Card } from "../types/Card";
+import HwatuCard from "./HwatuCard";
 
 const cards: Card[] = [
     { name: '1월', imgName: '1.jpg', means: ['소식', '손님', '남자'] },
@@ -28,6 +23,11 @@ export default function Hwatu() {
     const [pickCards, setPickCards] = useState<Card[]>([]);
     const [response, setResponse] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    useEffect(() => {
+        console.log("페이지 생성되어땅!!");
+        return () => {console.log("페이지 꺼졌당..")}
+    }, []);
 
     // 카드 섞기
     const handleMixCards = (): void => {
@@ -69,7 +69,7 @@ export default function Hwatu() {
             const means = pickCards.flatMap((card: Card) => card.means).join(", ");
             const command = `너는 점을 봐주는 점쟁이야. ${means} 키워드로 운세를 5줄 내외의 문장으로 만들어줘.`;
 
-            const API_KEY: string = import.meta.env.REACT_APP_GEMINI_API_KEY;
+            const API_KEY: string = import.meta.env.VITE_GEMINI_API_KEY;
             const apiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
             const data = { "contents": [{ "parts": [{ "text": command }] }] };
 
@@ -93,27 +93,7 @@ export default function Hwatu() {
                 <div>
                     <h1>카드를 선택하세요</h1>
                     {mixCards.map((card: Card) => (
-                        <div
-                            key={card.name}
-                            onClick={() => handlePickCard(card.name)}
-                            style={{
-                                border: card.selected ? "2px solid red" : "none",
-                                display: "inline-block",
-                                margin: "5px",
-                                cursor: "pointer"
-                            }}
-                        >
-                            {card.selected ? (
-                                <div>
-                                    <img src={`/images/${card.imgName}`} alt={card.name} />
-                                    <p>{card.name}</p>
-                                </div>
-                            ) : (
-                                <div>
-                                    <img src={`/images/back.jpg`} alt="back" />
-                                </div>
-                            )}
-                        </div>
+                        <HwatuCard key={card.name} card={card} clickFunction={handlePickCard} />
                     ))}
                     {pickCards.length === 2 && (
                         <div>
