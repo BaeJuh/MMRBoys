@@ -7,9 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 const Menu = () => {
     const dispatch = useDispatch();
-    const { menus } = useSelector((state) => {
-        return state.menu;
-    });
+    const { menus } = useSelector((state) => state.menu);
     const router = useRouter();
 
     const handleMenuClick = (menu) => {
@@ -21,13 +19,13 @@ const Menu = () => {
     return (
         <nav>
             <ul>
-                {menus.map((menu) => {
-                    <li
+                {menus.map((menu) =>
+                    (<li
                         key={menu.path}
                         onClick={() => { handleMenuClick(menu) }}>
                         {menu.name}
-                    </li>
-                })}
+                    </li>)
+                )}
             </ul>
         </nav>
     );
